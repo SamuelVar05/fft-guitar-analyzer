@@ -1,7 +1,7 @@
 import sounddevice as sd
-import numpy as np
+from config import CAPTURE_DURATION, SAMPLE_RATE
 
-def capture_audio(duration=0.05, sample_rate=44100):
+def capture_audio(duration=CAPTURE_DURATION, sample_rate=SAMPLE_RATE):
     """
     Captura audio desde el micrófono por un corto periodo (en segundos).
     Devuelve un array NumPy de la señal de audio.
