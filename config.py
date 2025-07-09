@@ -9,3 +9,7 @@ SAMPLE_RATE = 44100
 CAPTURE_DURATION = WINDOW_SIZE / SAMPLE_RATE
 
 UPDATE_INTERVAL_MS = int(CAPTURE_DURATION * 1000)  # en milisegundos para .after()
+
+NUM_WINDOWS = 5  # Número de ventanas para el análisis
+
+HOP_SIZE = 2048  # Tamaño de salto entre ventanas
