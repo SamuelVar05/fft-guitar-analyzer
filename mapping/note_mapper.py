@@ -15,3 +15,8 @@ def freq_to_note(freq: float):
 
     note_name = f"{NOTE_NAMES[note_index]}{octave}"
     return note_name, midi
+
+def midi_to_note(midi):
+    note_index = midi % 12
+    octave = midi // 12 - 1
+    return f"{NOTE_NAMES[note_index]}{octave}"
