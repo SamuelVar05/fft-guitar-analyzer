@@ -60,10 +60,10 @@ def main():
     fundamentals = detect_multiple_fundamentals(freqs, magnitudes)
     notas_detectadas = []
     for f in fundamentals:
-        note_name, midi = freq_to_note(f["freq"])
+        note_name, midi = freq_to_note(f)
         notas_detectadas.append({
-            "freq": f["freq"],
-            "magnitude": f["magnitude"],
+            "freq": f,
+            "magnitude": f,
             "midi": midi,
             "note": note_name
         })
@@ -79,14 +79,14 @@ def main():
     plt.grid()
 
     for f in fundamentals[:6]:  # Solo los primeros 6 picos
-        note_name, _ = freq_to_note(f["freq"])
+        note_name, _ = freq_to_note(f)
         # Encontrar el índice de frecuencia más cercana
-        idx = np.argmin(np.abs(freqs - f["freq"]))
+        idx = np.argmin(np.abs(freqs - f))
         mag = magnitudes[idx]
         plt.annotate(
             note_name,
-            xy=(f["freq"], mag),
-            xytext=(f["freq"], mag + 0.05),
+            xy=(f, mag),
+            xytext=(f, mag + 0.05),
             ha='center',
             fontsize=9,
             arrowprops=dict(arrowstyle='->', lw=0.5)
