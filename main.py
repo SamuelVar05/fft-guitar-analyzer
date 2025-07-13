@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from fft_analysis.fft_processor import averaged_fft
 from fft_analysis.peak_detection import detect_multiple_fundamentals
- 
+
 from mapping.note_mapper import freq_to_note, midi_to_note
 from mapping.fret_estimator import estimate_string_and_fret
 
@@ -40,7 +40,6 @@ def main():
         if e > len(signal):
             break
         plt.axvspan(s, e, color='orange', alpha=0.3, label="Ventana usada" if i == 0 else None)
-
     plt.axvline(peak_idx, color='red', linestyle='--', label='Pico de inicio')
     plt.title("Ventanas de análisis sobre la señal completa")
     plt.xlabel("Muestras")
@@ -50,10 +49,12 @@ def main():
     plt.tight_layout()
     plt.show()
 
-
-    # Aplicar FFT
-    freqs, magnitudes = averaged_fft(signal, sample_rate, num_windows=num_windows,
-                                      window_size=window_size_fft, hop_size=hop_size, pre_offset=pre_offset)
+    # Aplicar FFT promediada
+    freqs, magnitudes = averaged_fft(signal, sample_rate,
+                                     num_windows=num_windows,
+                                     window_size=window_size_fft,
+                                     hop_size=hop_size,
+                                     pre_offset=pre_offset)
 
     # Detectar múltiples frecuencias fundamentales
     fundamentals = detect_multiple_fundamentals(freqs, magnitudes)
@@ -61,7 +62,6 @@ def main():
     for f in fundamentals:
         note_name, midi = freq_to_note(f)
         idx = np.argmin(np.abs(freqs - f))
-    
         notas_detectadas.append({
             "freq": f,
             "magnitude": magnitudes[idx],
@@ -69,19 +69,19 @@ def main():
             "note": note_name
         })
 
-
-    # Mostrar espectro de frecuencias
+    # Mostrar espectro de la señal
     plt.figure(figsize=(10, 4))
-    plt.plot(freqs, magnitudes)
+    plt.plot(freqs, magnitudes, label="Espectro", color='green')
     plt.title("Espectro de la señal (FFT)")
     plt.xlabel("Frecuencia (Hz)")
     plt.ylabel("Magnitud normalizada")
     plt.xlim(0, 1000)
     plt.grid()
+    plt.legend()
 
-    for f in fundamentals[:6]:  # Solo los primeros 6 picos
+    # Anotar notas detectadas (máximo 6)
+    for f in fundamentals[:6]:
         note_name, _ = freq_to_note(f)
-        # Encontrar el índice de frecuencia más cercana
         idx = np.argmin(np.abs(freqs - f))
         mag = magnitudes[idx]
         plt.annotate(
@@ -99,5 +99,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
