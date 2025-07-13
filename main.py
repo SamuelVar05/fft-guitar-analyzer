@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 
 from fft_analysis.fft_processor import averaged_fft
 from fft_analysis.peak_detection import detect_multiple_fundamentals
-
-from mapping.valid_combinations import generar_combinaciones_validas, elegir_combinacion_mas_probable
+ 
 from mapping.note_mapper import freq_to_note, midi_to_note
 from mapping.fret_estimator import estimate_string_and_fret
 
@@ -61,9 +60,11 @@ def main():
     notas_detectadas = []
     for f in fundamentals:
         note_name, midi = freq_to_note(f)
+        idx = np.argmin(np.abs(freqs - f))
+    
         notas_detectadas.append({
             "freq": f,
-            "magnitude": f,
+            "magnitude": magnitudes[idx],
             "midi": midi,
             "note": note_name
         })
