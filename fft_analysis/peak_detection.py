@@ -25,18 +25,20 @@ def detect_fundamental(freqs: np.ndarray, magnitudes: np.ndarray, min_freq: floa
     fundamental_freq = filtered_freqs[index]
     return fundamental_freq
 
-def detect_multiple_fundamentals(freqs, magnitudes, min_freq=60.0, max_freq=1000.0, threshold=0.1):
-    """
-    Detecta múltiples picos (notas posibles) en el espectro.
-    Retorna una lista de frecuencias fundamentales candidatas.
-    """
+def detect_multiple_fundamentals(freqs, magnitudes, min_freq=60.0, max_freq=1000.0, threshold=0.1, top_n=3):
     mask = (freqs >= min_freq) & (freqs <= max_freq)
     freqs = freqs[mask]
     mags = magnitudes[mask]
 
-    # Umbral relativo al pico más alto
     height_threshold = threshold * max(mags)
-    peaks, _ = find_peaks(mags, height=height_threshold, distance=10)  # evitar picos muy cercanos
+    peaks, _ = find_peaks(mags, height=height_threshold, distance=10)
 
     detected_freqs = freqs[peaks]
-    return detected_freqs
+    detected_mags = mags[peaks]
+
+    # Ordenar por magnitud descendente y limitar a top_n
+    sorted_idxs = np.argsort(detected_mags)[::-1]
+    top_freqs = detected_freqs[sorted_idxs[:top_n]]
+
+    return top_freqs
+

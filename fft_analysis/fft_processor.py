@@ -43,6 +43,7 @@ def averaged_fft(signal, sample_rate, window_size=4096, hop_size=2048, num_windo
         start = max(0, total_len - (num_windows * hop_size + window_size))
 
     spectra = []
+    freqs = None  # ← Inicializamos freqs por si el bucle no entra
 
     for i in range(num_windows):
         s = start + i * hop_size
@@ -52,6 +53,10 @@ def averaged_fft(signal, sample_rate, window_size=4096, hop_size=2048, num_windo
         segment = signal[s:e]
         freqs, mags = compute_fft(segment, sample_rate)
         spectra.append(mags)
+
+    if not spectra:
+        # No se pudo calcular ningún espectro
+        return np.array([]), np.array([])
 
     avg_mags = np.mean(spectra, axis=0)
     return freqs, avg_mags

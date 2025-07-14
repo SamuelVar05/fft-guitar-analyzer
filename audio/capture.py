@@ -1,22 +1,33 @@
 import sounddevice as sd
-from config import CAPTURE_DURATION, SAMPLE_RATE
+import numpy as np
+from config import SAMPLE_RATE
 
-def capture_audio(duration=CAPTURE_DURATION, sample_rate=SAMPLE_RATE):
-    """
-    Captura audio desde el micrófono por un corto periodo (en segundos).
-    Devuelve un array NumPy de la señal de audio.
+class Recorder:
+    def __init__(self, sample_rate=SAMPLE_RATE):
+        self.sample_rate = sample_rate
+        self.recording = []
+        self.stream = None
 
-    Por defecto:
-    - duration = 0.05 s → 2205 muestras (~2048)
-    """
-    print("🎙️ Capturando audio...")
+    def callback(self, indata, frames, time, status):
+        if status:
+            print(status)
+        self.recording.append(indata.copy())
 
-    recording = sd.rec(
-        int(duration * sample_rate),
-        samplerate=sample_rate,
-        channels=1,
-        dtype='float32'
-    )
-    sd.wait()
-    print("✅ Captura finalizada.")
-    return recording.flatten(), sample_rate
+    def start(self):
+        self.recording = []
+        self.stream = sd.InputStream(
+            samplerate=self.sample_rate,
+            channels=1,
+            dtype='float32',
+            callback=self.callback
+        )
+        self.stream.start()
+        print("🎙️ Grabando...")
+
+    def stop(self):
+        if self.stream:
+            self.stream.stop()
+            self.stream.close()
+        audio = np.concatenate(self.recording, axis=0).flatten()
+        print("✅ Grabación finalizada.")
+        return audio, self.sample_rate
