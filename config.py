@@ -1,5 +1,5 @@
 # Tamaño de la ventana de análisis FFT
-WINDOW_SIZE = 16384
+WINDOW_SIZE = 4096
 
 # Frecuencia de muestreo estándar
 SAMPLE_RATE = 44100
@@ -12,4 +12,4 @@ UPDATE_INTERVAL_MS = int(CAPTURE_DURATION * 1000)  # en milisegundos para .after
 
 NUM_WINDOWS = 5  # Número de ventanas para el análisis
 
-HOP_SIZE = 2048  # Tamaño de salto entre ventanas
+HOP_SIZE = WINDOW_SIZE // 2  # Tamaño de salto entre ventanas
